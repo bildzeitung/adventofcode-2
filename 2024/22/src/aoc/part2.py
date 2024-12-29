@@ -39,7 +39,7 @@ def main(f: TextIO) -> None:
         for idx, v in enumerate(zip(deltas, deltas[1:], deltas[2:], deltas[3:])):
             t = (v[0], v[1], v[2], v[3])
             if t not in fourtuples:
-                fourtuples[t] = all_secrets[idx+4]
+                fourtuples[t] = all_secrets[idx + 4]
         all_4t.append(fourtuples)
 
     print("...done creating 4-tuples...")
@@ -49,7 +49,7 @@ def main(f: TextIO) -> None:
     print(f"Possible deltas to check: {len(common)}")
 
     # calc the sum for each 4-tuple across all 4-tuple dicts
-    all_sums = { c: sum(x[c] for x in all_4t if c in x) for c in track(common)}
+    all_sums = {c: sum(x[c] for x in all_4t if c in x) for c in track(common)}
     print("Finished calculating all sums; sorting next..")
     top_banana = sorted(all_sums, key=lambda x: all_sums[x])[-1]
     print(f"Top sequence: {top_banana} --> {all_sums[top_banana]}")
