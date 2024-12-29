@@ -1,0 +1,44 @@
+[build-system]
+requires = [
+    "setuptools>=56",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project]
+name = "aoc2024"
+authors = [
+    {name = "bildzeitung", email = "bildzeitung@gmail.com"},
+]
+description = "Advent of Code 2024"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.13"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dynamic = ["version"]
+dependencies = [
+    "pulp",
+    "rich",
+    "typer",
+]
+
+[project.urls]
+Homepage = "https://github.com/bildzeitung"
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "nox",
+]
+
+[project.scripts]
+aoc = "aoc.__main__:app"
+
+[tool.ruff]
+line-length = 100
+lint.extend-select = ["I"]
