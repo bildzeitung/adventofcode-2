@@ -8,6 +8,7 @@ from pulp import PULP_CBC_CMD, LpProblem, LpVariable, value
 from pulp.constants import LpInteger, LpMinimize, LpStatusOptimal
 from rich.progress import track
 
+
 def solve(x1: int, y1: int, x2: int, y2: int, goal_x: int, goal_y: int) -> int:
     a = LpVariable("a", 0, 100, cat=LpInteger)
     b = LpVariable("b", 0, 100, cat=LpInteger)
@@ -66,13 +67,12 @@ def main(f: TextIO) -> None:
             .split(","),
         )
 
-        problems.append([x1,y1,x2,y2,goal_x,goal_y])
+        problems.append([x1, y1, x2, y2, goal_x, goal_y])
 
         try:
             next(f)  # blank
         except StopIteration:
             break
 
-    
     total = sum(solve(*p) for p in track(problems))
     print(f"Final total -> {total}")

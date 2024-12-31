@@ -25,6 +25,7 @@ dependencies = [
     "pulp",
     "rich",
     "typer",
+    "z3-solver",
 ]
 
 [project.urls]
