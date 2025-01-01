@@ -80,6 +80,9 @@ def main(f: TextIO) -> None:
     print(f"{min_index} -> {scores[min_index]}")
     print(f"{max_index} -> {scores[max_index]}")
 
+    # full confession -- this is a WAG based on the minimal scores found
+    # in the bit above. Fortunately, manual inspection resulted in finding
+    # the required tree picture but .. still ..
     iteration = min_index + 1
     while iteration > 7000:
         maybe_tree = [r.sim(iteration) for r in robots]
