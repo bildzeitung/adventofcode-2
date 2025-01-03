@@ -23,6 +23,7 @@ classifiers = [
 dynamic = ["version"]
 dependencies = [
     "typer",
+    "attrs",
 ]
 
 [project.urls]
