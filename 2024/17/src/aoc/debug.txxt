@@ -1,0 +1,13 @@
+Program: 
+0,3  ADV 3 (right shift REG_A by 3)
+5,4  OUT A
+3,0  JNZ 0
+
+2,4  BST a          ; b <- 3-bit mask of a
+1,5  BXL b ^ 5      ; b <- XOR b with 101
+7,5  CDV a / 2 ** b ; c <- a // 2 ** b
+1,6  BXL b ^ 6      ; b <- XOR b with 110
+4,3  BXC b ^ c      ; b <- b ^ c
+5,5  OUT b ^ 7      ; print right 3 bits of reg b
+0,3  ADV a / 8      ; a <- a >> 3, right shift reg a by 3
+3,0  JNZ 0
