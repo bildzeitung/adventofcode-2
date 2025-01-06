@@ -2,7 +2,6 @@
 Advent of Code 2024
 """
 
-import sys
 from pathlib import Path
 
 import typer

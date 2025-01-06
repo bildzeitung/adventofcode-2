@@ -3,7 +3,7 @@ Advent of Code Part 1
 """
 
 import heapq
-from typing import TextIO, Tuple, Set
+from typing import Dict, Set, TextIO, Tuple
 
 from attrs import define, field
 
@@ -16,7 +16,8 @@ DIRECTIONS = [
 
 MAZE_LIMIT = (70, 70)
 
-@define(frozen=True)
+
+@define()
 class Node:
     """For the sake of equality, only position and
     direction are considered
@@ -26,6 +27,7 @@ class Node:
     g: int = field(eq=False)
     h: int = field(eq=False)
     parent: "Node" = field(eq=False, default=None)
+    valid: bool = field(eq=False, default=True)
 
     @property
     def f(self) -> int:
@@ -39,15 +41,16 @@ class Node:
 def printWinner(n: Node):
     count = 0
     while n.parent:
-        count+=1
+        count += 1
         n = n.parent
     print(f"Path length: {count}")
+
 
 def main(f: TextIO) -> None:
     """
     Solution to part 1
     """
-    blocks = [(x,y) for x,y in [map(int, line.strip().split(',')) for line in f]]
+    blocks = [(x, y) for x, y in [map(int, line.strip().split(",")) for line in f]]
     print(f"Have {len(blocks)} blocks")
 
     # apply 1024 blocks only
@@ -55,7 +58,7 @@ def main(f: TextIO) -> None:
     print(f"Puzzle has {len(puzzle)} blocks")
 
     # solve maze
-    start = (0,0)
+    start = (0, 0)
     finish = MAZE_LIMIT
 
     # A*
@@ -63,39 +66,51 @@ def main(f: TextIO) -> None:
         return abs(finish[0] - pos[0]) + abs(finish[1] - pos[1])
 
     pqueue = []  # priority queue
-    closed : Set[Node] = set()
-    heapq.heappush(pqueue, Node(start, 0, 0))
+    closed: Set[Tuple[int, int]] = set()
+    all_open_pos: Dict[Tuple[int, int], Node] = {}
+
+    # init
+    start_node = Node(start, 0, 0)
+    heapq.heappush(pqueue, start_node)
+    all_open_pos[start_node.position] = start_node
     while pqueue:
         current: Node = heapq.heappop(pqueue)
-        if current in closed:
+
+        if not current.valid:
+            continue  # skip invalidated nodes
+
+        if current.position in closed:
             continue
 
         if current.position == finish:
-            print(f"We have a winner: {current}")
+            # print(f"We have a winner: {current}")
             printWinner(current)
             break
-        closed.add(current)
+
+        del all_open_pos[current.position]
+        closed.add(current.position)
 
         # child: move in any direction
         for d in DIRECTIONS:
             x, y = current.position
-            new_pos = (x+d[0], y+d[1])
+            new_pos = (x + d[0], y + d[1])
             # roll off left and top
             if new_pos[0] < 0 or new_pos[1] < 0:
                 continue
             # roll off left and bottom
             if new_pos[0] > MAZE_LIMIT[0] or new_pos[1] > MAZE_LIMIT[1]:
                 continue
+            # hit wall
+            if new_pos in puzzle:
+                continue
 
-            if new_pos not in puzzle:
-                new_node = Node(new_pos, current.g + 1, h(new_pos), current)
-                try:
-                    existing_node = pqueue.index(new_node)
-                    if new_node.g < pqueue[existing_node].g :
-                        pqueue[existing_node] = new_node
-                        heapq.heapify(pqueue)
-                        continue
-                except ValueError:
-                    pass
-                heapq.heappush(pqueue, new_node)
+            new_node = Node(new_pos, current.g + 1, h(new_pos), current)
+            try:
+                existing_node = all_open_pos[new_node.position]
+                if existing_node.valid and new_node.g < existing_node.g:
+                    existing_node.valid = False
+            except KeyError:
+                pass
 
+            heapq.heappush(pqueue, new_node)
+            all_open_pos[new_node.position] = new_node
