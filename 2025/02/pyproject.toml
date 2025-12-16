@@ -32,6 +32,7 @@ Homepage = "https://github.com/bildzeitung"
 dev = [
     "ruff",
     "nox",
+    "ty",
 ]
 
 [project.scripts]
