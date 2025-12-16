@@ -15,47 +15,45 @@ def main(f: TextIO) -> None:
     for item in ranges:
         low, high = item
         slow, shigh = str(low), str(high)
-        # catch some easy cases
-        if len(slow) % 2 and len(shigh) == len(slow):
-            print(f"[{low, high}] have no invalid IDs (both odd lengths)")
-            continue
 
-        if len(slow) == 1 and len(shigh) > 1:
+        if low < 10:
             print(f"Odd case: {low, high}")
             low = 10
-            slow = str(low)
+            slow = "10"
 
         # need even length for start string
         if len(slow) % 2:
             # 123 -> 1000, e.g. lowest next power of 10
             low = 10 ** ceil(log10(low))
             slow = str(low)
-            assert low <= high
+
+        if low > high:
+            continue
 
         # now we can divide the start string into left and right halves
-        l, r = int(slow[0 : len(slow) // 2]), int(slow[len(slow) // 2 :])
-        print(f"Processing {slow} --> {l}, {r}\tmax: {shigh}")
+        ll, r = int(slow[0 : len(slow) // 2]), int(slow[len(slow) // 2 :])
+        print(f"Processing {slow} --> {ll}, {r}\tmax: {shigh}")
 
         while True:
-            if l == r:
-                print(f"Got invalid ID: {l, r}")
-                results.append(int(str(l) + str(r)))
+            if ll == r:
+                print(f"Got invalid ID: {ll, r}")
+                results.append(int(str(ll) + str(r)))
                 r += 1
-                l += 1
+                ll += 1
 
             # eg 9967849351 --> 99678, 49351
             #    so the next possible invalid id is: 9967899678
-            if l > r:
-                r = l
+            if ll > r:
+                r = ll
             # eg 117855 --> 117, 855
             #    so the next possible invalid id is: 118118
-            elif l < r:
-                l += 1
-                r = l
+            elif ll < r:
+                ll += 1
+                r = ll
 
             # ok, exhausted the range
-            print(f"{l} | {r} | next: {int(str(l) + str(r))}")
-            if int(str(l) + str(r)) > high:
+            print(f"{ll} | {r} | next: {int(str(ll) + str(r))}")
+            if int(str(ll) + str(r)) > high:
                 break
     print(f"Results: {results}")
     print(f"Final: {sum(results)}")
