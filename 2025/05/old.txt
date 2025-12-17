@@ -1,0 +1,51 @@
+
+    The naive approach:
+
+        all_numbers : set[int] = set()
+        for r in all_ranges:
+            all_numbers |= set(x for x in range(r[0], r[1]+1))
+
+        print(f"Total: {len(all_numbers)}")
+
+    
+    all_ranges = []
+    for line in f:
+        if not line.strip():
+            break
+        start, stop = [int(x) for x in line.strip().split("-")]
+        all_ranges.append((start, stop))
+    
+    final_ranges = [all_ranges[0]]
+    for item in all_ranges[1:]:
+        iteml, itemr = item
+        ''' 
+         Cases:
+
+        1)  |----|
+              |----|
+
+        2)    |----|
+            |----|
+            
+        3)    |-|
+            |----|
+
+        4)  |----|
+            |-|
+        '''
+        new_final_ranges = []
+        for r in final_ranges:
+            el, er = r
+            if iteml < el and (el < itemr < er):
+                # case 1: extend low range
+                new_final_ranges.append((iteml, er))
+                print(f"Extend left {iteml} -> {el} -> {itemr} -> {er}")
+                continue
+            if (el < iteml < er) and itemr > er:
+                # case 2: extend upper range
+                new_final_ranges.append((el, itemr))
+                print(f"Extend right {el} -> {iteml} -> {er} -> {itemr}")
+                continue
+            new_final_ranges.append(r)
+        final_ranges = new_final_ranges
+    """
